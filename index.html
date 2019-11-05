@@ -41,6 +41,12 @@
 
       <script>
 
+          /*
+            index=25 in query string => start from element 25
+            limit=10 in QS => get only 10 elements in this response
+            q=your search => get elements that match the specified query string
+          */
+
         function loadMusic(){
             fetch("https://deezerdevs-deezer.p.rapidapi.com/search?q=eminem", {
                 headers: {
