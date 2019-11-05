@@ -28,7 +28,7 @@
   <body>
       <div class="container">
             <h1>This is the list of albums</h1>
-            <!-- <input type="button" class="btn btn-primary" value="Load Posts" onclick="loadPosts()" > -->
+            <input type="button" class="btn btn-primary" value="Load Albums" onclick="loadAlbums()" > 
             <div class="row" id="albums">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
@@ -41,10 +41,34 @@
 
       <script>
 
-          //https://jsonplaceholder.typicode.com/albums
+        function loadMusic(){
+            fetch("https://deezerdevs-deezer.p.rapidapi.com/search?q=eminem", {
+                headers: {
+                    "X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
+                    "X-RapidAPI-Key": "[YOUR API KEY]"
+                },
+                method: "GET"
+            }).then(function(res){
+                return res.json()
+            }).then(function(tracks){
+                console.log(tracks)
+
+                var albumsDiv = document.querySelector("#albums")
+                albumsDiv.innerHTML = "";
+
+                tracks.data.forEach(track => {
+                    albumsDiv.innerHTML += `
+                        <div class="col-sm-2">
+                            <img src="${track.album.cover}" />
+                            <span>${track.title} </span>
+                        </div>
+                    `
+                })
+            });
+        }
 
         window.onload = function(){
-            loadAlbums()
+            //loadAlbums()
             //loadPosts()
             // setTimeout(loadPosts, 1000) //this method will be executed after 1second
             //total time: 1s + AJAX Time
@@ -67,7 +91,6 @@
                         newDiv.className ="col-sm-3 album" //set a class for it
                         newDiv.innerText = album.title // set a title for it 
                         newDiv.addEventListener("click", function(event){ //set what happens when clicked 
-
                             //so, when clicked, we fetch the information for the specific album id
                             fetch("https://jsonplaceholder.typicode.com/photos?albumId=" + album.id) //adding albumId=123 to the query string
                                 .then(function(resp){ //when we get the respose
@@ -89,7 +112,11 @@
                         albumsDiv.appendChild(newDiv)
                     });
                 })
-        }
+                .catch(function(error) {
+                    var albumsDiv = document.querySelector("#albums") //we get a reference to the albums divs
+                    albumsDiv.innerHTML = error;
+                })
+            }
 
         // function loadPostsNoPromise() {
         //     fetch("https://jsonplaceholder.typicode.com/posts", function(response){
